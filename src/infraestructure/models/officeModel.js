@@ -1,6 +1,6 @@
 import Sequelize from "sequelize";
-import connection from "../config/dataBase.js";
 import Faculty from "./facultyModel.js";
+import connection from "../config/db.js";
 
 const Office = connection.define("oficinas", {
   id_oficina: {
@@ -49,6 +49,8 @@ const Office = connection.define("oficinas", {
     allowNull: true,
     defaultValue: 1,
   },
+}, {
+  tableName: "oficinas",
 });
 
 Office.belongsTo(Faculty, { foreignKey: "id_facultad", targetKey: "id_facultad" });
