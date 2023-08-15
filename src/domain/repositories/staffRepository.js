@@ -180,6 +180,63 @@ class staffRepository {
       throw error;
     }
   }
+
+  async getStaffByPosition(id_cargo) {
+    try {
+      const staffs = await Staff.findAll({
+        where: { estado: 1 },
+        include: [
+          {
+            model: Office,
+          },
+          {
+            model: FacultyStaff,
+            include: [Faculty],
+          },
+          {
+            model: PositionStaff,
+            include: [Position],
+          },
+        ],
+        order: [["nombre", "ASC"]],
+      });
+
+      if (staffs.length <= 0) {
+        return false;
+      }
+
+      const staffData = staffs.filter((staff) => staff.cargo_personals.some(
+        (position) => position.cargo.id_cargo == id_cargo
+      )).map((staff) => ({
+        id_personal: staff.id_personal,
+        nombre: staff.nombre,
+        direccion: staff.direccion,
+        correo: staff.correo,
+        telefono: staff.telefono,
+        perfil: staff.perfil,
+
+        imagen: staff.imagen
+          ? `${process.env.DOMAIN}/${process.env.DATA}/staff/${staff.imagen}`
+          : null,
+
+        oficina: staff.oficina.nombre_oficina,
+
+        facultades: staff.facultad_personals
+          .filter((faculty) => faculty.facultade.estado == 1)
+          .map((faculty) => `${faculty.facultade.nombre_facultad}`),
+
+        cargos: staff.cargo_personals
+          .filter((position) => position.cargo.estado == 1)
+          .map((position) => `${position.cargo.nombre_cargo}`),
+
+        estado: staff.estado,
+      }));
+
+      return staffData;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default staffRepository;

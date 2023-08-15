@@ -31,6 +31,15 @@ class staffService {
         throw error;
       }
     }
+
+    async getStaffByPosition(id_cargo) {
+      try {
+        const staff = await this.staffRepository.getStaffByPosition(id_cargo);
+        return staff;
+      } catch (error) {
+        throw error;
+      }
+    }
   }
   
   export default staffService;

@@ -34,11 +34,9 @@ const getStaffById = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({
-        error: "Ocurrió un error en el servidor (Controller - getStaffById)",
-      });
+    res.status(500).json({
+      error: "Ocurrió un error en el servidor (Controller - getStaffById)",
+    });
   }
 };
 
@@ -54,13 +52,26 @@ const getStaffGeneral = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({
-        error:
-          "Ocurrió un error en el servidor (Controller - getStaffGeneral)",
-      });
+    res.status(500).json({
+      error: "Ocurrió un error en el servidor (Controller - getStaffGeneral)",
+    });
   }
 };
 
-export { getAllStaff, getStaffById, getStaffGeneral };
+const getStaffByPosition = async (req, res) => {
+  try {
+    const { id_cargo } = req.params;
+    const staff = await staffService.getStaffByPosition(id_cargo);
+
+    if (staff && staff.length > 0) {
+      res.json(staff);
+    } else {
+      res.status(404).json({ error: "No existen registros" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Ocurrió un error en el servidor (Controller - getStaffByPosition)" });
+  }
+};
+
+export { getAllStaff, getStaffById, getStaffGeneral, getStaffByPosition };
