@@ -1,4 +1,5 @@
 class staffService {
+    
     constructor(staffRepository) {
       this.staffRepository = staffRepository;
     }
