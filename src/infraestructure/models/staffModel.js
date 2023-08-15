@@ -33,10 +33,6 @@ const Staff = connection.define(
       type: Sequelize.TEXT,
       allowNull: true,
     },
-    cargo: {
-      type: Sequelize.STRING(250),
-      allowNull: true,
-    },
     tipo_personal: {
       type: Sequelize.INTEGER,
       allowNull: false,
@@ -68,6 +64,10 @@ Staff.belongsTo(Office, { foreignKey: "id_oficina", targetKey: "id_oficina" });
 
 import("./facultyStaffModel.js").then((FacultyStaff) => {
   Staff.hasMany(FacultyStaff.default, { foreignKey: "id_personal" });
+});
+
+import("./positionStaffModel.js").then((PositionStaff) => {
+  Staff.hasMany(PositionStaff.default, { foreignKey: "id_personal" });
 });
 
 export default Staff;
