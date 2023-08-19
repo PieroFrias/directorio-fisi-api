@@ -1,5 +1,5 @@
 import Sequelize from "sequelize";
-import connection from "../config/db";
+import connection from "../config/db.js";
 
 const Faculty = connection.define(
   "facultades",
@@ -37,19 +37,19 @@ const Faculty = connection.define(
     }
   },
   {
-    // Otras opciones del modelo
+    tableName: "facultades",
   }
 );
 
-import('./imgFacultyModel').then((ImgFaculty) => {
+import('./imgFacultyModel.js').then((ImgFaculty) => {
   Faculty.hasMany(ImgFaculty.default, { foreignKey: 'id_facultad' });
 });
 
-import('./officeModel').then((Office) => {
+import('./officeModel.js').then((Office) => {
   Faculty.hasMany(Office.default, { foreignKey: 'id_facultad' });
 });
 
-import('./facultyStaffModel').then((FacultyStaff) => {
+import('./facultyStaffModel.js').then((FacultyStaff) => {
   Faculty.hasMany(FacultyStaff.default, { foreignKey: 'id_facultad' });
 });
 

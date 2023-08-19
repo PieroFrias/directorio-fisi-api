@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
-import Faculty from './facultyModel';
-import connection from '../config/db';
+import Faculty from './facultyModel.js';
+import connection from '../config/db.js';
 
 const ImgFaculty = connection.define('img_facultad', {
   id_img_fac: {
