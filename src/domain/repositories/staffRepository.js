@@ -237,6 +237,135 @@ class staffRepository {
       throw error;
     }
   }
+
+  async filterStaff(filterData) {
+    try {
+      let whereCondition = {};
+
+      const {
+        id_cargo,
+        id_facultad,
+        id_oficina,
+        search,
+      } = filterData;
+
+      const officeFilter = {};
+
+      const positionFilter = {};
+      let includePositionStaff = {
+        model: PositionStaff,
+        include: [Position],
+        where: positionFilter,
+        required: false,
+      };
+
+      const facultyFilter = {};
+      let includeFacultyStaff = {
+        model: FacultyStaff,
+        include: [Faculty],
+        where: facultyFilter,
+        required: false,
+      };
+
+      if (id_oficina) {
+        officeFilter.id_oficina = id_oficina;
+      }
+
+      if (id_cargo) {
+        const position = await Position.findOne({
+          where: { estado: 1, id_cargo: id_cargo },
+        });
+
+        if (position) {
+          const staffsWithPosition = await PositionStaff.findAll({
+            where: { id_cargo: id_cargo },
+          });
+
+          const staffsIds = staffsWithPosition.map(
+            (item) => item.id_personal
+          );
+          positionFilter.id_personal = staffsIds;
+
+          includePositionStaff = {
+            model: PositionStaff,
+            include: [Position],
+            where: positionFilter,
+            required: true,
+          };
+        }
+      }
+
+      if (id_facultad) {
+        const faculty = await Faculty.findOne({
+          where: { estado: 1, id_facultad: id_facultad },
+        });
+
+        if (faculty) {
+          const staffsWithFaculty = await FacultyStaff.findAll({
+            where: { id_facultad: id_facultad },
+          });
+
+          const staffsIds = staffsWithFaculty.map(
+            (item) => item.id_personal
+          );
+          facultyFilter.id_personal = staffsIds;
+
+          includeFacultyStaff = {
+            model: FacultyStaff,
+            include: [Faculty],
+            where: facultyFilter,
+            required: true,
+          };
+        }
+      }
+
+      if (search) {
+        whereCondition = {
+          estado: 1,
+          [Op.or]: [
+            { nombre: { [Op.like]: `%${search}%` } },
+          ],
+        };
+      }
+
+      const staffExists = await Staff.findAll({
+        where: whereCondition,
+        include: [
+          {
+            model: Office,
+            where: officeFilter,
+          },
+          includeFacultyStaff,
+          includePositionStaff,
+        ],
+        order: [["nombre", "ASC"]],
+      });
+
+      if (staffExists.count <= 0) { return false; }
+
+      const staff = staffExists.map((staff) => ({
+        id_personal: staff.id_personal,
+        nombre: staff.nombre,
+        oficina: `${staff.oficina.nombre_oficina} (${staff.oficina.iniciales})`,
+
+        cargos: staff.cargo_personals
+          .filter(
+            (position) => position.cargo.estado == 1
+          )
+          .map(
+            (position) => position.cargo.nombre_cargo
+          ),
+        
+        facultades: staff.facultad_personals
+          .filter((faculty) => faculty.facultade.estado == 1)
+          .map((faculty) => `${faculty.facultade.nombre_facultad}`),
+      }));
+
+      return staff;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default staffRepository;

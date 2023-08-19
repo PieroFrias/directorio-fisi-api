@@ -31,6 +31,15 @@ class facultiesService {
       throw error;
     }
   }
+
+  async filterFaculties(filterData) {
+    try {
+      const faculties = await this.facultiesRepository.filterFaculties(filterData);
+      return faculties;
+    } catch (error) {
+      throw new Error('Error al obtener las facultades: ' + error.message);
+    }
+  }
 }
 
 export default facultiesService;

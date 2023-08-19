@@ -41,6 +41,15 @@ class staffService {
         throw error;
       }
     }
+
+    async filterStaff(filterData) {
+      try {
+        const staff = await this.staffRepository.filterStaff(filterData);
+        return staff;
+      } catch (error) {
+        throw new Error('Error al obtener el personal: ' + error.message);
+      }
+    }
   }
   
   export default staffService;

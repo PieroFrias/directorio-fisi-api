@@ -74,4 +74,21 @@ const getStaffByPosition = async (req, res) => {
   }
 };
 
-export { getAllStaff, getStaffById, getStaffGeneral, getStaffByPosition };
+const filterStaff = async (req, res) => {
+  try {
+    const { ...filterData } = req.body;
+
+    const staff = await staffService.filterStaff(filterData);
+
+    if (staff && staff.length > 0) {
+      res.json(staff);
+    } else {
+      res.status(404).json({ error: "No se encontró personal con los filtros seleccionados" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error en el servidor al filtrar personal (Controller - filterStaff)" });
+  }
+};
+
+export { getAllStaff, getStaffById, getStaffGeneral, getStaffByPosition, filterStaff };

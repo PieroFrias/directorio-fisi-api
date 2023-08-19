@@ -63,4 +63,21 @@ const getFacultiesGeneral = async (req, res) => {
   }
 };
 
-export { getAllFaculties, getFacultyById, getFacultiesGeneral };
+const filterFaculties = async (req, res) => {
+  try {
+    const { ...filterData } = req.body;
+
+    const faculties = await facultiesService.filterFaculties(filterData);
+
+    if (faculties && faculties.length > 0) {
+      res.json(faculties);
+    } else {
+      res.status(404).json({ error: "No se encontraton facuultades con los filtros seleccionados" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error en el servidor al filtrar facultades (Controller - filterFaculties)" });
+  }
+};
+
+export { getAllFaculties, getFacultyById, getFacultiesGeneral, filterFaculties };
