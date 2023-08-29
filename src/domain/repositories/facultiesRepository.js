@@ -191,23 +191,17 @@ class facultiesRepository {
 
   async filterFaculties(filterData) {
     try {
-      let whereCondition = {};
-
       const { id_oficina, search, } = filterData;
 
-      const officeFilter = {};
-      if (id_oficina) {
-        officeFilter.id_oficina = id_oficina;
-      }
+      const officeFilter = id_oficina ? { id_oficina: id_oficina } : {};
 
+      let whereCondition = {};
+      whereCondition.estado = 1;
       if (search) {
-        whereCondition = {
-          estado: 1,
-          [Op.or]: [
-            { nombre_facultad: { [Op.like]: `%${search}%` } },
-            { iniciales: { [Op.like]: `%${search}%` } },
-          ],
-        };
+        whereCondition[Op.or] = [
+          { nombre_facultad: { [Op.like]: `%${search}%` } },
+          { iniciales: { [Op.like]: `%${search}%` } },
+        ];
       }
 
       const faculties = await Faculty.findAll({

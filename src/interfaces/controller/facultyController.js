@@ -66,7 +66,6 @@ const getFacultiesGeneral = async (req, res) => {
 const filterFaculties = async (req, res) => {
   try {
     const { ...filterData } = req.body;
-
     const faculties = await facultiesService.filterFaculties(filterData);
 
     if (faculties && faculties.length > 0) {
