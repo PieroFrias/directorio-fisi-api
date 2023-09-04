@@ -13,17 +13,21 @@ class generalSearchRepository {
       const faculties = await this.searchFaculties(search);
       const staff = await this.searchStaff(search);
       const office = await this.searchPueblosIndigenas(search);
-
+  
       const array = [];
       const result = array.concat(faculties, staff, office);
-
-      if (result.length <= 0) { return false; }
-
-      return result;
+  
+      const filteredResult = result.filter(item => item !== false);
+  
+      if (filteredResult.length <= 0) {
+        return [];
+      }
+  
+      return filteredResult;
     } catch (error) {
       throw error;
     }
-  }
+  }  
 
   async searchFaculties(search) {
     const faculties = new facultiesRepository(connection);
